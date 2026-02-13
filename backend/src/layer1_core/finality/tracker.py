@@ -138,24 +138,38 @@ class EthereumFinalityTracker(FinalityTracker):
 
     def __init__(self):
         super().__init__(config.CHAINS["ethereum"])
-        # TODO: Initialize Web3 connection
-        self.w3 = None
+        # Initialize Web3 connection
+        from web3 import Web3
+        self.w3 = Web3(Web3.HTTPProvider(self.chain_config.rpc_url))
+
+        # Test connection
+        try:
+            connected = self.w3.is_connected()
+            if connected:
+                logger.info(f"✓ Connected to Ethereum RPC: {self.chain_config.rpc_url}")
+            else:
+                logger.warning(f"⚠️ Failed to connect to Ethereum RPC")
+        except Exception as e:
+            logger.error(f"Error connecting to Ethereum RPC: {e}")
 
     async def get_current_block_number(self) -> int:
         """Get current Ethereum block number."""
-        # TODO: Implement with web3.py
-        # return await self.w3.eth.block_number
-        raise NotImplementedError("Ethereum RPC connection not implemented")
+        try:
+            # web3.py sync call wrapped for async compatibility
+            return self.w3.eth.block_number
+        except Exception as e:
+            logger.error(f"Error getting Ethereum block number: {e}")
+            raise
 
     async def check_block_exists(self, block_number: int) -> bool:
         """Check if block exists (reorg detection)."""
-        # TODO: Implement with web3.py
-        # try:
-        #     block = await self.w3.eth.get_block(block_number)
-        #     return block is not None
-        # except:
-        #     return False
-        raise NotImplementedError("Ethereum RPC connection not implemented")
+        try:
+            block = self.w3.eth.get_block(block_number)
+            return block is not None
+        except Exception as e:
+            # Block not found or RPC error
+            logger.debug(f"Block {block_number} not found on Ethereum: {e}")
+            return False
 
 
 class ArbitrumFinalityTracker(FinalityTracker):
@@ -170,17 +184,36 @@ class ArbitrumFinalityTracker(FinalityTracker):
 
     def __init__(self):
         super().__init__(config.CHAINS["arbitrum"])
-        self.w3 = None
+        # Initialize Web3 connection (Arbitrum uses same interface as Ethereum)
+        from web3 import Web3
+        self.w3 = Web3(Web3.HTTPProvider(self.chain_config.rpc_url))
+
+        # Test connection
+        try:
+            connected = self.w3.is_connected()
+            if connected:
+                logger.info(f"✓ Connected to Arbitrum RPC: {self.chain_config.rpc_url}")
+            else:
+                logger.warning(f"⚠️ Failed to connect to Arbitrum RPC")
+        except Exception as e:
+            logger.error(f"Error connecting to Arbitrum RPC: {e}")
 
     async def get_current_block_number(self) -> int:
         """Get current Arbitrum block number."""
-        # TODO: Implement with web3.py
-        raise NotImplementedError("Arbitrum RPC connection not implemented")
+        try:
+            return self.w3.eth.block_number
+        except Exception as e:
+            logger.error(f"Error getting Arbitrum block number: {e}")
+            raise
 
     async def check_block_exists(self, block_number: int) -> bool:
         """Check if block exists (reorg detection)."""
-        # TODO: Implement with web3.py
-        raise NotImplementedError("Arbitrum RPC connection not implemented")
+        try:
+            block = self.w3.eth.get_block(block_number)
+            return block is not None
+        except Exception as e:
+            logger.debug(f"Block {block_number} not found on Arbitrum: {e}")
+            return False
 
 
 class SolanaFinalityTracker(FinalityTracker):
@@ -195,18 +228,34 @@ class SolanaFinalityTracker(FinalityTracker):
 
     def __init__(self):
         super().__init__(config.CHAINS["solana"])
-        self.client = None
+        # Initialize Solana connection
+        from solana.rpc.async_api import AsyncClient
+        self.client = AsyncClient(self.chain_config.rpc_url)
+
+        logger.info(f"✓ Initialized Solana RPC client: {self.chain_config.rpc_url}")
 
     async def get_current_block_number(self) -> int:
         """Get current Solana slot (equivalent to block number)."""
-        # TODO: Implement with solana.py
-        raise NotImplementedError("Solana RPC connection not implemented")
+        try:
+            response = await self.client.get_slot()
+            if response.value is not None:
+                return response.value
+            else:
+                raise Exception("Failed to get Solana slot")
+        except Exception as e:
+            logger.error(f"Error getting Solana slot: {e}")
+            raise
 
     async def check_block_exists(self, block_number: int) -> bool:
         """Check if block/slot exists (reorg detection)."""
-        # TODO: Implement with solana.py
-        # Solana uses slots; need to check if slot is still valid
-        raise NotImplementedError("Solana RPC connection not implemented")
+        try:
+            # Try to get block at this slot
+            response = await self.client.get_block(block_number)
+            return response.value is not None
+        except Exception as e:
+            # Slot skipped or doesn't exist
+            logger.debug(f"Slot {block_number} not found on Solana: {e}")
+            return False
 
 
 class FinalityTrackerRegistry:
