@@ -1,0 +1,22 @@
+{
+  "collection_date": "2026-02-13T18:41:33.426952+00:00",
+  "period": {
+    "start": "2022-05-07T00:00:00+00:00",
+    "end": "2022-05-13T23:59:59+00:00",
+    "days": 7
+  },
+  "data_points": {
+    "total": 2000,
+    "luna": 1000,
+    "ust": 1000
+  },
+  "timeline": {
+    "2022-05-07": "UST begins to depeg (drops to $0.985)",
+    "2022-05-08": "UST falls to $0.60, LUNA drops 50%",
+    "2022-05-09": "UST at $0.30, LUNA Foundation Guard deploys BTC reserves",
+    "2022-05-10": "UST at $0.20, LUNA down 96%, hyperinflation begins",
+    "2022-05-11": "UST at $0.10, LUNA supply explodes from 350M to 6.5T",
+    "2022-05-12": "Terra blockchain halted, LUNA price near $0.0001",
+    "2022-05-13": "Chain restarted, post-mortem analysis begins"
+  }
+}

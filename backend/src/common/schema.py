@@ -83,6 +83,12 @@ class RiskEvent:
     """Current price in USD."""
 
     volume: Optional[float] = None
+    market_cap: Optional[float] = None
+    volume_24h: Optional[float] = None
+    net_supply_change: Optional[float] = None
+    liquidity_depth: Optional[float] = None
+    market_volatility: Optional[float] = None
+    sentiment_score: Optional[float] = None
     """24h trading volume in USD."""
 
     liquidity_depth: Optional[float] = None
@@ -189,6 +195,9 @@ class RiskEvent:
     """True if flagged as statistical outlier."""
 
     quality_score: float = 1.0
+    
+    # Metadata
+    metadata: Optional[Dict] = None
     """Data quality score (0.0 - 1.0)."""
 
     deduplication_count: int = 0

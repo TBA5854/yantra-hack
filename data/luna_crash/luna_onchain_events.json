@@ -1,0 +1,100 @@
+[
+  {
+    "timestamp": "2022-05-07T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 54200000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-08T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 800000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-09T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 2300000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-10T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 6496500000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-11T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 400000000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-12T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 0,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-13T00:00:00+00:00",
+    "coin": "LUNA",
+    "net_supply_change": 0,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-07T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": -700000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-08T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": -700000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-09T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": -1300000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-10T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": -2500000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-11T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": -1500000000,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-12T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": 0,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  },
+  {
+    "timestamp": "2022-05-13T00:00:00+00:00",
+    "coin": "UST",
+    "net_supply_change": 0,
+    "chain": "terra_classic",
+    "source": "onchain_supply"
+  }
+]
