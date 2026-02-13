@@ -1,0 +1,14 @@
+{
+  "config": "usdn_recent",
+  "coin": "USDN",
+  "period": {
+    "start": "2026-02-07T00:00:00+00:00",
+    "end": "2026-02-14T23:59:59+00:00"
+  },
+  "total_records": 1992,
+  "sources": {
+    "coingecko": 1992
+  },
+  "price_stats": {},
+  "depeg_stats": {}
+}

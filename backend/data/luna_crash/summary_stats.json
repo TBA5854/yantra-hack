@@ -1,0 +1,26 @@
+{
+  "config": "ust_crash",
+  "coin": "UST",
+  "period": {
+    "start": "2022-05-07T00:00:00+00:00",
+    "end": "2022-05-13T23:59:59+00:00"
+  },
+  "total_records": 1738,
+  "sources": {
+    "binance_spot": 1738
+  },
+  "price_stats": {
+    "min": 0.245779,
+    "max": 0.9999,
+    "mean": 0.8243048757192174,
+    "start": 0.9999,
+    "end": 0.245779,
+    "change_pct": -75.41964196419642
+  },
+  "depeg_stats": {
+    "max_depeg_bps": 7542.21,
+    "mean_depeg_bps": 1756.9512428078249,
+    "min_price": 0.245779,
+    "worst_depeg_timestamp": "2022-05-13T00:45:00+00:00"
+  }
+}

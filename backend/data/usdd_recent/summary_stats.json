@@ -1,0 +1,14 @@
+{
+  "config": "usdd_recent",
+  "coin": "USDD",
+  "period": {
+    "start": "2026-02-07T00:00:00+00:00",
+    "end": "2026-02-14T23:59:59+00:00"
+  },
+  "total_records": 1993,
+  "sources": {
+    "cryptocompare": 1993
+  },
+  "price_stats": {},
+  "depeg_stats": {}
+}

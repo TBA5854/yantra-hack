@@ -1,0 +1,63 @@
+2026-02-14 03:41:05,438 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:05,438 - __main__ - INFO - CRASHED STABLECOIN DATA COLLECTION
+2026-02-14 03:41:05,438 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:05,438 - __main__ - INFO - Mode: Crash periods only
+2026-02-14 03:41:05,438 - __main__ - INFO - Total datasets to collect: 4
+2026-02-14 03:41:05,438 - __main__ - INFO - 
+2026-02-14 03:41:05,438 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:05,438 - __main__ - INFO - COLLECTING: USDD_CRASH
+2026-02-14 03:41:05,438 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:05,438 - __main__ - INFO - Coin: USDD
+2026-02-14 03:41:05,438 - __main__ - INFO - Period: 2022-06-12 to 2022-06-18
+2026-02-14 03:41:05,438 - __main__ - INFO - Description: USDD crash week (June 12-18, 2022) - Tron algorithmic stablecoin depeg
+2026-02-14 03:41:05,438 - __main__ - INFO -   📊 Fetching Binance klines for USDDUSDT...
+2026-02-14 03:41:05,689 - src.data_collection.sources.luna_market_collector - WARNING - Binance API error for USDDUSDT: 400
+2026-02-14 03:41:05,690 - __main__ - INFO -   ✓ Collected 0 Binance klines
+2026-02-14 03:41:05,690 - __main__ - INFO -   ℹ️  Using CoinGecko as primary source (no Binance data)
+2026-02-14 03:41:05,690 - __main__ - INFO -   🦎 Fetching CoinGecko data for usdd...
+2026-02-14 03:41:05,690 - __main__ - INFO -   ℹ️  Using CoinGecko Free API (may be rate limited)
+2026-02-14 03:41:06,535 - __main__ - ERROR -   ❌ CoinGecko API error: 401
+2026-02-14 03:41:06,536 - __main__ - ERROR - ❌ Failed to collect any data for usdd_crash
+2026-02-14 03:41:07,537 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:07,537 - __main__ - INFO - COLLECTING: USDN_CRASH
+2026-02-14 03:41:07,537 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:07,537 - __main__ - INFO - Coin: USDN
+2026-02-14 03:41:07,537 - __main__ - INFO - Period: 2022-04-03 to 2022-04-09
+2026-02-14 03:41:07,537 - __main__ - INFO - Description: USDN crash week (April 3-9, 2022) - Waves blockchain stablecoin collapse
+2026-02-14 03:41:07,537 - __main__ - INFO -   ⏭️  No Binance symbol for USDN, skipping Binance
+2026-02-14 03:41:07,537 - __main__ - INFO -   ℹ️  Using CoinGecko as primary source (no Binance data)
+2026-02-14 03:41:07,537 - __main__ - INFO -   🦎 Fetching CoinGecko data for neutrino...
+2026-02-14 03:41:07,537 - __main__ - INFO -   ℹ️  Using CoinGecko Free API (may be rate limited)
+2026-02-14 03:41:08,874 - __main__ - ERROR -   ❌ CoinGecko API error: 401
+2026-02-14 03:41:08,875 - __main__ - ERROR - ❌ Failed to collect any data for usdn_crash
+2026-02-14 03:41:09,876 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:09,877 - __main__ - INFO - COLLECTING: BAC_CRASH
+2026-02-14 03:41:09,877 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:09,877 - __main__ - INFO - Coin: BAC
+2026-02-14 03:41:09,877 - __main__ - INFO - Period: 2021-01-10 to 2021-01-16
+2026-02-14 03:41:09,877 - __main__ - INFO - Description: BAC crash week (Jan 10-16, 2021) - Basis Cash algorithmic stablecoin failure
+2026-02-14 03:41:09,877 - __main__ - INFO -   ⏭️  No Binance symbol for BAC, skipping Binance
+2026-02-14 03:41:09,877 - __main__ - INFO -   ℹ️  Using CoinGecko as primary source (no Binance data)
+2026-02-14 03:41:09,877 - __main__ - INFO -   🦎 Fetching CoinGecko data for basis-cash...
+2026-02-14 03:41:09,877 - __main__ - INFO -   ℹ️  Using CoinGecko Free API (may be rate limited)
+2026-02-14 03:41:10,498 - __main__ - ERROR -   ❌ CoinGecko API error: 401
+2026-02-14 03:41:10,499 - __main__ - ERROR - ❌ Failed to collect any data for bac_crash
+2026-02-14 03:41:11,500 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:11,501 - __main__ - INFO - COLLECTING: SETD_CRASH
+2026-02-14 03:41:11,501 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:11,501 - __main__ - INFO - Coin: SETD
+2026-02-14 03:41:11,501 - __main__ - INFO - Period: 2021-02-14 to 2021-02-20
+2026-02-14 03:41:11,501 - __main__ - INFO - Description: SETD crash week (Feb 14-20, 2021) - SetDollar algorithmic stablecoin depeg
+2026-02-14 03:41:11,501 - __main__ - INFO -   ⏭️  No Binance symbol for SETD, skipping Binance
+2026-02-14 03:41:11,501 - __main__ - INFO -   ℹ️  Using CoinGecko as primary source (no Binance data)
+2026-02-14 03:41:11,501 - __main__ - INFO -   🦎 Fetching CoinGecko data for set-dollar...
+2026-02-14 03:41:11,501 - __main__ - INFO -   ℹ️  Using CoinGecko Free API (may be rate limited)
+2026-02-14 03:41:12,034 - __main__ - ERROR -   ❌ CoinGecko API error: 401
+2026-02-14 03:41:12,034 - __main__ - ERROR - ❌ Failed to collect any data for setd_crash
+2026-02-14 03:41:13,036 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:13,036 - __main__ - INFO - COLLECTION SUMMARY
+2026-02-14 03:41:13,036 - __main__ - INFO - ======================================================================
+2026-02-14 03:41:13,036 - __main__ - INFO - Total datasets: 4
+2026-02-14 03:41:13,036 - __main__ - INFO - Successful: 0
+2026-02-14 03:41:13,037 - __main__ - INFO - Failed: 4
+2026-02-14 03:41:13,037 - __main__ - INFO - ======================================================================

@@ -1,14 +1,14 @@
 {
-  "collection_date": "2026-02-13T18:41:33.426952+00:00",
+  "collection_date": "2026-02-13T21:14:52.455976+00:00",
   "period": {
     "start": "2022-05-07T00:00:00+00:00",
     "end": "2022-05-13T23:59:59+00:00",
     "days": 7
   },
   "data_points": {
-    "total": 2000,
-    "luna": 1000,
-    "ust": 1000
+    "total": 3474,
+    "luna": 1736,
+    "ust": 1738
   },
   "timeline": {
     "2022-05-07": "UST begins to depeg (drops to $0.985)",

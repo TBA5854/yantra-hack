@@ -196,6 +196,14 @@ class Config:
         }
     }
 
+    # Poll intervals (seconds)
+    SOURCE_CONFIG = {
+        "price_interval_sec": 60,
+        "liquidity_interval_sec": 300,
+        "volatility_interval_sec": 3600,
+        "sentiment_interval_sec": 3600
+    }
+
     # Sentiment sources
     SENTIMENT_SOURCES = {
         "twitter": {
