@@ -1,0 +1,34 @@
+# Rust
+target/
+Cargo.lock
+
+# Environment
+.env
+*.env
+!.env.example
+
+# Keypairs (security)
+*.json
+!package.json
+!tsconfig.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Docker
+.dockerignore

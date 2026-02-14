@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: solana-logger-db
+    environment:
+      POSTGRES_DB: solana_logger
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./api/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: solana-logger-api
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres/solana_logger
+      SOLANA_RPC_URL: https://api.devnet.solana.com
+      SOLANA_KEYPAIR_PATH: /app/keypair.json
+      API_HOST: 0.0.0.0
+      API_PORT: 8080
+      RUST_LOG: info
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keypair.json:/app/keypair.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
