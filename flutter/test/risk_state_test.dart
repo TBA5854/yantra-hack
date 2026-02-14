@@ -10,7 +10,13 @@ void main() {
       windowState: 'PROVISIONAL',
       explanations: [],
       stressBreakdown: {},
+      history: [],
       chainData: {},
+      finalityWeight: 1.0,
+      crossChainConfidence: 1.0,
+      completeness: 1.0,
+      stalenessPenalty: 0.0,
+      chainFinalityList: [],
     );
 
     expect(riskState.riskScore, 74);
