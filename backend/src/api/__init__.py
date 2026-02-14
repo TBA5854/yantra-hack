@@ -1,0 +1,2 @@
+"""FastAPI Backend for ML Risk Prediction System"""
+__version__ = "1.0.0"

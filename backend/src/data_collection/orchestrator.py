@@ -22,8 +22,7 @@ from src.common.schema import RiskEvent
 from src.data_collection.sources.price_source import price_source
 from src.data_collection.sources.liquidity_source import liquidity_source
 from src.data_collection.sources.supply_source import MultiChainSupplyMonitor
-from src.data_collection.sources.volatility_source import volatility_source
-from src.data_collection.sources.sentiment_source import sentiment_source
+# Removed: volatility_source and sentiment_source (mock data)
 from src.data_collection.quality.pipeline import DataQualityPipeline
 
 logger = logging.getLogger(__name__)
@@ -91,11 +90,11 @@ class DataCollectionOrchestrator:
         events = []
 
         # Collect from each source in parallel
+        # Only real data sources - no mocks
         tasks = [
             price_source.fetch_price(coin, chain),
             liquidity_source.fetch_liquidity(coin, chain),
-            volatility_source.calculate_volatility(coin, chain),
-            sentiment_source.fetch_sentiment(coin, chain)
+            # Removed: volatility and sentiment mock sources
         ]
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -300,7 +299,8 @@ async def demo_orchestrator():
 
     # Create orchestrator for USDC and USDT on Ethereum and Arbitrum
     orchestrator = DataCollectionOrchestrator(
-        coins=["USDC", "USDT"],
+        coins=["BTC"],
+        # coins=["USDC", "USDT"],
         chains=["ethereum", "arbitrum"],
         enable_quality_pipeline=True
     )

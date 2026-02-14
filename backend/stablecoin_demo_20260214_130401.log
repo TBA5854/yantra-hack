@@ -1,0 +1,84 @@
+2026-02-14 13:04:02,874 - __main__ - INFO - ======================================================================
+2026-02-14 13:04:02,874 - __main__ - INFO - 🚀 Starting 10-Second Stablecoin Data Collection Demo
+2026-02-14 13:04:02,874 - __main__ - INFO - ======================================================================
+2026-02-14 13:04:02,874 - src.data_collection.sources.supply_source - INFO - Running in mock mode for USDC on ethereum
+2026-02-14 13:04:02,874 - src.data_collection.sources.supply_source - INFO - Initialized 1 supply monitors
+2026-02-14 13:04:02,874 - src.data_collection.orchestrator - INFO - Initialized orchestrator for 1 coins on 1 chains
+2026-02-14 13:04:02,874 - __main__ - INFO - ⚙️  Configured for: USDC on Ethereum
+2026-02-14 13:04:02,874 - __main__ - INFO - ⏰ Start time: 2026-02-14 13:04:02.874871
+2026-02-14 13:04:02,874 - __main__ - INFO - ⏱️  Duration: 10 seconds
+2026-02-14 13:04:02,874 - __main__ - INFO - 
+2026-02-14 13:04:02,874 - __main__ - INFO - 📡 Collecting data from all sources...
+2026-02-14 13:04:02,875 - src.data_collection.orchestrator - INFO - ======================================================================
+2026-02-14 13:04:02,875 - src.data_collection.orchestrator - INFO - COLLECTING DATA FROM ALL SOURCES
+2026-02-14 13:04:02,875 - src.data_collection.orchestrator - INFO - ======================================================================
+2026-02-14 13:04:02,875 - src.data_collection.orchestrator - INFO - Coins: USDC
+2026-02-14 13:04:02,875 - src.data_collection.orchestrator - INFO - Chains: ethereum
+2026-02-14 13:04:02,875 - src.data_collection.orchestrator - INFO - 
+📊 Fetching USDC on ethereum...
+2026-02-14 13:04:02,878 - src.data_collection.sources.volatility_source - INFO - [MOCK] Calculated volatility for USDC: 0.0521%
+2026-02-14 13:04:02,878 - src.data_collection.sources.sentiment_source - INFO - [MOCK] Fetched sentiment for USDC: 0.084 (NEUTRAL)
+2026-02-14 13:04:03,188 - src.data_collection.quality.pipeline - WARNING - Attempt 1/3 failed for uniswap_v3_USDC: GraphQL errors: [{'message': 'This endpoint has been removed. If you have any questions, reach out to support@thegraph.zendesk.com'}]
+2026-02-14 13:04:03,188 - src.data_collection.quality.pipeline - INFO - Backing off 1s before retry...
+2026-02-14 13:04:03,453 - src.data_collection.quality.pipeline - WARNING - Attempt 1/3 failed for coingecko_USDC: 400, message='Bad Request', url='https://pro-api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=usd&include_24hr_vol=true&include_last_updated_at=true'
+2026-02-14 13:04:03,453 - src.data_collection.quality.pipeline - INFO - Backing off 1s before retry...
+2026-02-14 13:04:04,606 - src.data_collection.quality.pipeline - WARNING - Attempt 2/3 failed for uniswap_v3_USDC: GraphQL errors: [{'message': 'This endpoint has been removed. If you have any questions, reach out to support@thegraph.zendesk.com'}]
+2026-02-14 13:04:04,606 - src.data_collection.quality.pipeline - INFO - Backing off 2s before retry...
+2026-02-14 13:04:05,104 - src.data_collection.quality.pipeline - WARNING - Attempt 2/3 failed for coingecko_USDC: 400, message='Bad Request', url='https://pro-api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=usd&include_24hr_vol=true&include_last_updated_at=true'
+2026-02-14 13:04:05,104 - src.data_collection.quality.pipeline - INFO - Backing off 2s before retry...
+2026-02-14 13:04:06,976 - src.data_collection.quality.pipeline - WARNING - Attempt 3/3 failed for uniswap_v3_USDC: GraphQL errors: [{'message': 'This endpoint has been removed. If you have any questions, reach out to support@thegraph.zendesk.com'}]
+2026-02-14 13:04:06,976 - src.data_collection.quality.pipeline - ERROR - All retries exhausted for uniswap_v3_USDC
+2026-02-14 13:04:07,959 - src.data_collection.quality.pipeline - WARNING - Attempt 3/3 failed for coingecko_USDC: 400, message='Bad Request', url='https://pro-api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=usd&include_24hr_vol=true&include_last_updated_at=true'
+2026-02-14 13:04:07,959 - src.data_collection.quality.pipeline - ERROR - All retries exhausted for coingecko_USDC
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO -   ✓ Collected 2 events from 2 sources
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO - 
+🔍 Applying quality pipeline to 2 events...
+2026-02-14 13:04:07,960 - src.data_collection.quality.pipeline - INFO - Quality pipeline processed 2 events (outliers: 0)
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO -   ✓ 2 events passed quality checks
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO - 
+======================================================================
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO - ✅ COLLECTION COMPLETE: 2 total events
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO - ======================================================================
+2026-02-14 13:04:07,960 - __main__ - INFO - ✅ Collected 2 events
+2026-02-14 13:04:07,960 - __main__ - INFO - 
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO - 
+======================================================================
+2026-02-14 13:04:07,960 - src.data_collection.orchestrator - INFO - COLLECTION SUMMARY
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO - ======================================================================
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO - Total events: 2
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO - 
+By coin:
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO -   USDC: 2 events
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO - 
+By chain:
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO -   ethereum: 2 events
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO - 
+By source:
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO -   volatility_mock: 1 events
+2026-02-14 13:04:07,961 - src.data_collection.orchestrator - INFO -   sentiment_mock: 1 events
+2026-02-14 13:04:07,961 - __main__ - INFO - 
+2026-02-14 13:04:07,961 - __main__ - INFO - ======================================================================
+2026-02-14 13:04:07,961 - __main__ - INFO - 📊 DETAILED EVENT DATA
+2026-02-14 13:04:07,961 - __main__ - INFO - ======================================================================
+2026-02-14 13:04:07,961 - __main__ - INFO - 
+🔹 Event 1:
+2026-02-14 13:04:07,961 - __main__ - INFO -    Coin: USDC
+2026-02-14 13:04:07,961 - __main__ - INFO -    Chain: ethereum
+2026-02-14 13:04:07,961 - __main__ - INFO -    Source: volatility_mock
+2026-02-14 13:04:07,961 - __main__ - INFO -    Timestamp: 2026-02-14 07:34:02.878393
+2026-02-14 13:04:07,961 - __main__ - INFO -    Volatility: 0.0005
+2026-02-14 13:04:07,962 - __main__ - INFO -    TCS: 0.300
+2026-02-14 13:04:07,962 - __main__ - INFO -    Finality: tier1
+2026-02-14 13:04:07,962 - __main__ - INFO - 
+🔹 Event 2:
+2026-02-14 13:04:07,962 - __main__ - INFO -    Coin: USDC
+2026-02-14 13:04:07,962 - __main__ - INFO -    Chain: ethereum
+2026-02-14 13:04:07,962 - __main__ - INFO -    Source: sentiment_mock
+2026-02-14 13:04:07,962 - __main__ - INFO -    Timestamp: 2026-02-14 07:34:02.878862
+2026-02-14 13:04:07,962 - __main__ - INFO -    Sentiment: +0.08
+2026-02-14 13:04:07,962 - __main__ - INFO -    TCS: 0.300
+2026-02-14 13:04:07,962 - __main__ - INFO -    Finality: tier1
+2026-02-14 13:04:07,962 - __main__ - INFO - 
+2026-02-14 13:04:07,962 - __main__ - INFO - ======================================================================
+2026-02-14 13:04:07,962 - __main__ - INFO - ✅ Demo completed at: 2026-02-14 13:04:07.962589
+2026-02-14 13:04:07,962 - __main__ - INFO - ======================================================================

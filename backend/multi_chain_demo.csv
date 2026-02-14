@@ -1,0 +1,10 @@
+timestamp,coin,chain,source,price,volume_24h,market_cap,liquidity_depth,net_supply_change,market_volatility,sentiment_score,temporal_confidence,finality_tier,block_number,tx_hash
+2026-02-14T07:43:32,USDC,ethereum,coingecko,0.999919,,,,,,,0.300,tier1,,
+2026-02-14T07:43:32,USDC,arbitrum,coingecko,0.999919,,,,,,,0.300,tier1,,
+2026-02-14T07:43:32,USDC,solana,coingecko,0.999919,,,,,,,0.300,tier1,,
+2026-02-14T07:45:19,USDC,ethereum,coingecko,1.000000,,,,,,,0.300,tier1,,
+2026-02-14T07:45:19,USDC,arbitrum,coingecko,1.000000,,,,,,,0.300,tier1,,
+2026-02-14T07:45:19,USDC,solana,coingecko,1.000000,,,,,,,0.300,tier1,,
+2026-02-14T07:45:46,DAI,ethereum,coingecko,0.999574,,,,,,,0.300,tier1,,
+2026-02-14T07:45:46,DAI,arbitrum,coingecko,0.999574,,,,,,,0.300,tier1,,
+2026-02-14T07:45:46,DAI,solana,coingecko,0.999574,,,,,,,0.300,tier1,,

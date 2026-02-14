@@ -28,13 +28,21 @@ class PriceSource:
         self.api_key = self.source_config.get("api_key")
         self.timeout = self.source_config["timeout"]
 
-        # Use Pro API URL if API key is present
+        # Detect API type based on key format
+        # Demo keys start with "CG-" and must use demo API URL
+        # Pro keys are longer UUIDs and use pro API URL
         if self.api_key and "your_key" not in self.api_key.lower():
-            self.base_url = "https://pro-api.coingecko.com/api/v3"
-            logger.info("Using CoinGecko Pro API")
+            if self.api_key.startswith("CG-"):
+                # Demo API key - use demo URL
+                self.base_url = "https://api.coingecko.com/api/v3"
+                logger.info("Using CoinGecko Demo API (demo key detected)")
+            else:
+                # Pro API key - use pro URL
+                self.base_url = "https://pro-api.coingecko.com/api/v3"
+                logger.info("Using CoinGecko Pro API")
         else:
             self.base_url = "https://api.coingecko.com/api/v3"
-            logger.info("Using CoinGecko Free API")
+            logger.info("Using CoinGecko Free API (no key)")
 
         # CoinGecko coin IDs
         self.coin_id_map = {
@@ -94,7 +102,11 @@ class PriceSource:
 
         headers = {}
         if self.api_key:
-            headers["x-cg-pro-api-key"] = self.api_key
+            # Demo keys use x-cg-demo-api-key, Pro keys use x-cg-pro-api-key
+            if self.api_key.startswith("CG-"):
+                headers["x-cg-demo-api-key"] = self.api_key
+            else:
+                headers["x-cg-pro-api-key"] = self.api_key
 
         async with aiohttp.ClientSession() as session:
             async with session.get(
@@ -164,7 +176,11 @@ class PriceSource:
 
             headers = {}
             if self.api_key:
-                headers["x-cg-pro-api-key"] = self.api_key
+                # Demo keys use x-cg-demo-api-key, Pro keys use x-cg-pro-api-key
+                if self.api_key.startswith("CG-"):
+                    headers["x-cg-demo-api-key"] = self.api_key
+                else:
+                    headers["x-cg-pro-api-key"] = self.api_key
 
             async with aiohttp.ClientSession() as session:
                 async with session.get(
