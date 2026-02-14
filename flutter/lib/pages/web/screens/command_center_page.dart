@@ -4,10 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../features/risk/risk_provider.dart';
-import '../../../../data/models/risk_snapshot.dart';
-import '../../../../data/models/stress_factor.dart';
+import '../../../features/risk/risk_provider.dart';
+import '../../../data/models/risk_snapshot.dart';
+import '../../../data/models/stress_factor.dart';
 
+/// Command Center - Instant system state overview
+/// Clean, minimalist design - NO glassmorphism
 class CommandCenterPage extends ConsumerWidget {
   const CommandCenterPage({super.key});
 
@@ -15,180 +17,224 @@ class CommandCenterPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final riskStateAsync = ref.watch(riskNotifierProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: riskStateAsync.when(
-        data: (riskState) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+    return riskStateAsync.when(
+      data: (riskState) {
+        return Container(
+          color: const Color(0xFF0A0A0A),
+          padding: const EdgeInsets.all(32.0),
+          child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Zone A: Risk Dominance
-                _buildZoneA(
-                  context,
-                  riskState.riskScore,
-                  riskState.riskLevel,
-                  riskState.tcs,
-                  riskState.windowState,
-                  riskState.finalityWeight,
-                  riskState.crossChainConfidence,
-                  riskState.completeness,
-                ), // Passing breakdown for completeness proxy
+                // Page title
+                _buildPageTitle(),
                 const SizedBox(height: 32),
-                // Zone B: Risk Evolution Timeline
-                _buildZoneB(context, riskState.history),
-                const SizedBox(height: 32),
-                // Zone C: Live Stress Snapshot
-                _buildZoneC(context, riskState.stressBreakdown),
+
+                // Zone A: Risk Dominance (60/40 split)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Left: Risk Score
+                    Expanded(
+                      flex: 6,
+                      child: _buildRiskScoreCard(
+                        riskState.riskScore,
+                        riskState.riskLevel,
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+
+                    // Right: System State
+                    Expanded(
+                      flex: 4,
+                      child: _buildSystemStateCard(
+                        context,
+                        riskState.tcs,
+                        riskState.windowState,
+                        riskState.finalityWeight,
+                        riskState.completeness,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // Zone B: Risk Timeline
+                _buildRiskTimeline(riskState.history),
+
+                const SizedBox(height: 24),
+
+                // Zone C: Stress Snapshot (4 cards)
+                _buildStressSnapshot(context, riskState.stressBreakdown),
               ],
             ),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Text('Error: $err', style: const TextStyle(color: Colors.red)),
+          ),
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFF00E5FF),
+        ),
+      ),
+      error: (err, stack) => Center(
+        child: Text(
+          'Error: $err',
+          style: const TextStyle(color: Colors.red),
         ),
       ),
     );
   }
 
-  // --- Zone A: Risk Dominance ---
-  Widget _buildZoneA(
-    BuildContext context,
-    int riskScore,
-    String riskLevel,
-    double tcs,
-    String windowState,
-    double finality,
-    double xChain,
-    double completeness,
-  ) {
-    return SizedBox(
-      height: 350,
-      child: Row(
-        children: [
-          // Left: Risk Meter (60%)
-          Expanded(flex: 6, child: _buildRiskMeter(riskScore, riskLevel)),
-          const SizedBox(width: 24),
-          // Right: Confidence Card (40%)
-          Expanded(
-            flex: 4,
-            child: _buildConfidenceCard(
-              context,
-              tcs,
-              windowState,
-              finality,
-              xChain,
-              completeness,
-            ),
+  Widget _buildPageTitle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'COMMAND CENTER',
+          style: GoogleFonts.robotoMono(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: 60,
+          height: 2,
+          color: const Color(0xFF00E5FF),
+        ),
+      ],
     );
   }
 
-  Widget _buildRiskMeter(int score, String level) {
-    // Determine color
-    Color meterColor = Colors.greenAccent;
-    if (score > 50) meterColor = Colors.orangeAccent;
-    if (score > 80) meterColor = Colors.redAccent;
+  Widget _buildRiskScoreCard(int score, String level) {
+    Color scoreColor = const Color(0xFF00FF88); // Green
+    if (score > 50) scoreColor = const Color(0xFFFFCC00); // Yellow
+    if (score > 80) scoreColor = const Color(0xFFFF3333); // Red
 
     return Container(
+      height: 280,
+      padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[800]!),
+        color: const Color(0xFF0F0F0F),
+        border: Border.all(
+          color: const Color(0xFF1A1A1A),
+          width: 1,
+        ),
       ),
-      child: Stack(
-        alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Large Arc
-          SizedBox(
-            width: 300,
-            height: 300,
-            child: PieChart(
-              PieChartData(
-                startDegreeOffset: 180,
-                borderData: FlBorderData(show: false),
-                sectionsSpace: 0,
-                centerSpaceRadius: 110,
-                sections: [
-                  PieChartSectionData(
-                    color: meterColor,
-                    value: score.toDouble(),
-                    radius: 25,
-                    title: '',
-                  ),
-                  PieChartSectionData(
-                    color: Colors.grey[800],
-                    value: (100 - score).toDouble(),
-                    radius: 25,
-                    title: '',
-                  ),
-                  // Bottom half hidden
-                  PieChartSectionData(
-                    color: Colors.transparent,
-                    value: 100,
-                    radius: 25,
-                    title: '',
-                  ),
-                ],
-              ),
+          // Large score number
+          Text(
+            score.toString(),
+            style: GoogleFonts.robotoMono(
+              color: scoreColor,
+              fontSize: 96,
+              fontWeight: FontWeight.bold,
+              height: 1,
             ),
           ),
-          // Center Text
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$score',
-                style: GoogleFonts.robotoMono(
-                  color: Colors.white,
-                  fontSize: 72,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                level.toUpperCase(),
-                style: GoogleFonts.robotoMono(
-                  color: meterColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Continuous Risk Score',
-                style: GoogleFonts.robotoMono(
-                  color: Colors.grey[500],
-                  fontSize: 10,
-                ),
-              ),
-            ],
+          const SizedBox(height: 16),
+
+          // Risk level
+          Text(
+            level.toUpperCase(),
+            style: GoogleFonts.robotoMono(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 2,
+            ),
           ),
+          const SizedBox(height: 8),
+
+          // Subtitle
+          Text(
+            'CONTINUOUS RISK SCORE',
+            style: GoogleFonts.robotoMono(
+              color: Colors.grey[700],
+              fontSize: 10,
+              letterSpacing: 1,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Progress bar
+          _buildProgressBar(score / 100, scoreColor),
         ],
       ),
     );
   }
 
-  Widget _buildConfidenceCard(
+  Widget _buildProgressBar(double value, Color color) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '0',
+              style: GoogleFonts.robotoMono(
+                color: Colors.grey[700],
+                fontSize: 10,
+              ),
+            ),
+            Text(
+              '50',
+              style: GoogleFonts.robotoMono(
+                color: Colors.grey[700],
+                fontSize: 10,
+              ),
+            ),
+            Text(
+              '100',
+              style: GoogleFonts.robotoMono(
+                color: Colors.grey[700],
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Container(
+          height: 4,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1A1A1A),
+          ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: value,
+            child: Container(
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSystemStateCard(
     BuildContext context,
     double tcs,
     String windowState,
     double finality,
-    double xChain,
     double completeness,
   ) {
     return InkWell(
       onTap: () => context.go('/confidence'),
-      borderRadius: BorderRadius.circular(8),
       child: Container(
+        height: 280,
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[800]!),
+          color: const Color(0xFF0F0F0F),
+          border: Border.all(
+            color: const Color(0xFF1A1A1A),
+            width: 1,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,55 +242,64 @@ class CommandCenterPage extends ConsumerWidget {
             Text(
               'SYSTEM STATE',
               style: GoogleFonts.robotoMono(
-                color: Colors.grey[400],
-                fontSize: 12,
+                color: Colors.grey[600],
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
+                letterSpacing: 1,
               ),
             ),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildMetricItem(
-                  'TCS',
-                  tcs.toStringAsFixed(2),
-                  Colors.cyanAccent,
-                ),
-                _buildMetricItem('WINDOW', windowState, Colors.white),
-              ],
+
+            // TCS
+            _buildMetric(
+              'CONFIDENCE',
+              '${(tcs * 100).toInt()}%',
+              const Color(0xFF00E5FF),
             ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildMetricItem(
-                  'FINALITY',
-                  'T-${(finality * 3).ceil()}',
-                  Colors.purpleAccent,
-                ), // Mock tier calc
-                _buildMetricItem(
-                  'DATA',
-                  '${(completeness * 100).toInt()}%',
-                  Colors.greenAccent,
-                ),
-              ],
+            const SizedBox(height: 20),
+
+            // Window State
+            _buildMetric(
+              'WINDOW',
+              windowState,
+              Colors.white,
             ),
+            const SizedBox(height: 20),
+
+            // Finality
+            _buildMetric(
+              'FINALITY',
+              'T-${(finality * 3).ceil()}',
+              const Color(0xFFAA88FF),
+            ),
+            const SizedBox(height: 20),
+
+            // Data Completeness
+            _buildMetric(
+              'DATA',
+              '${(completeness * 100).toInt()}%',
+              const Color(0xFF00FF88),
+            ),
+
             const Spacer(),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.black45,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.grey[800]!),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildBullet('Finality weight dominates TCS.'),
-                  _buildBullet('Cross-chain signals stable.'),
-                  _buildBullet('No data staleness detected.'),
-                ],
-              ),
+
+            // Tap hint
+            Row(
+              children: [
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.grey[800],
+                  size: 12,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'View details',
+                  style: GoogleFonts.robotoMono(
+                    color: Colors.grey[800],
+                    fontSize: 10,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -252,20 +307,22 @@ class CommandCenterPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMetricItem(String label, String value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildMetric(String label, String value, Color color) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: GoogleFonts.robotoMono(color: Colors.grey[500], fontSize: 10),
+          style: GoogleFonts.robotoMono(
+            color: Colors.grey[700],
+            fontSize: 11,
+          ),
         ),
-        const SizedBox(height: 4),
         Text(
           value,
           style: GoogleFonts.robotoMono(
             color: color,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -273,73 +330,31 @@ class CommandCenterPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBullet(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Container(
-            width: 4,
-            height: 4,
-            color: Colors.grey,
-            margin: const EdgeInsets.only(right: 8),
-          ),
-          Text(
-            text,
-            style: GoogleFonts.robotoMono(
-              color: Colors.grey[400],
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // --- Zone B: Risk Evolution Timeline ---
-  Widget _buildZoneB(BuildContext context, List<RiskSnapshot> history) {
-    // Sort history by timestamp just in case
+  Widget _buildRiskTimeline(List<RiskSnapshot> history) {
     final sortedHistory = List<RiskSnapshot>.from(history)
       ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     return Container(
-      height: 400, // Reduced height for better fit
+      height: 320,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[800]!),
+        color: const Color(0xFF0F0F0F),
+        border: Border.all(
+          color: const Color(0xFF1A1A1A),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'RISK EVOLUTION',
-                style: GoogleFonts.robotoMono(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Row(
-                children: [
-                  _buildLegendDot(Colors.greenAccent.withOpacity(0.2), 'SAFE'),
-                  const SizedBox(width: 12),
-                  _buildLegendDot(
-                    Colors.orangeAccent.withOpacity(0.2),
-                    'WARNING',
-                  ),
-                  const SizedBox(width: 12),
-                  _buildLegendDot(
-                    Colors.redAccent.withOpacity(0.2),
-                    'CRITICAL',
-                  ),
-                ],
-              ),
-            ],
+          Text(
+            'RISK TIMELINE',
+            style: GoogleFonts.robotoMono(
+              color: Colors.grey[600],
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
           ),
           const SizedBox(height: 24),
           Expanded(
@@ -347,29 +362,31 @@ class CommandCenterPage extends ConsumerWidget {
               LineChartData(
                 gridData: FlGridData(
                   show: true,
-                  drawVerticalLine: true,
-                  getDrawingHorizontalLine: (value) =>
-                      FlLine(color: Colors.grey[800]!, strokeWidth: 1),
-                  getDrawingVerticalLine: (value) =>
-                      FlLine(color: Colors.grey[800]!, strokeWidth: 1),
+                  drawVerticalLine: false,
+                  horizontalInterval: 25,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: const Color(0xFF1A1A1A),
+                    strokeWidth: 1,
+                  ),
                 ),
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 1, // Assumes roughly 1 hour per snapshot index
+                      interval: sortedHistory.length > 10
+                          ? (sortedHistory.length / 6).floorToDouble()
+                          : 1,
                       getTitlesWidget: (value, meta) {
                         int index = value.toInt();
                         if (index >= 0 && index < sortedHistory.length) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              DateFormat(
-                                'HH:mm',
-                              ).format(sortedHistory[index].timestamp),
+                              DateFormat('HH:mm')
+                                  .format(sortedHistory[index].timestamp),
                               style: GoogleFonts.robotoMono(
-                                color: Colors.grey[500],
-                                fontSize: 10,
+                                color: Colors.grey[700],
+                                fontSize: 9,
                               ),
                             ),
                           );
@@ -381,13 +398,13 @@ class CommandCenterPage extends ConsumerWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 20,
-                      reservedSize: 40,
+                      interval: 25,
+                      reservedSize: 35,
                       getTitlesWidget: (value, meta) => Text(
                         value.toInt().toString(),
                         style: GoogleFonts.robotoMono(
-                          color: Colors.grey[500],
-                          fontSize: 10,
+                          color: Colors.grey[700],
+                          fontSize: 9,
                         ),
                       ),
                     ),
@@ -413,51 +430,43 @@ class CommandCenterPage extends ConsumerWidget {
                       );
                     }).toList(),
                     isCurved: true,
-                    color: Colors.white,
-                    barWidth: 3,
+                    color: const Color(0xFF00E5FF),
+                    barWidth: 2,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, barData, index) {
-                        // Check for event
                         bool hasEvent = sortedHistory[index].event != null;
                         return FlDotCirclePainter(
-                          radius: hasEvent ? 6 : 4,
-                          color: hasEvent ? Colors.cyanAccent : Colors.white,
-                          strokeWidth: hasEvent ? 2 : 0,
-                          strokeColor: Colors.black,
+                          radius: hasEvent ? 4 : 2,
+                          color: hasEvent
+                              ? const Color(0xFFFFCC00)
+                              : const Color(0xFF00E5FF),
+                          strokeWidth: 0,
                         );
                       },
                     ),
                     belowBarData: BarAreaData(
                       show: true,
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.redAccent.withOpacity(0.3),
-                          Colors.orangeAccent.withOpacity(0.3),
-                          Colors.greenAccent.withOpacity(0.3),
-                        ],
-                        stops: const [
-                          0.0,
-                          0.5,
-                          1.0,
-                        ], // Simple gradient approximation of risk zones
-                      ),
+                      color: const Color(0xFF00E5FF).withOpacity(0.1),
                     ),
                   ),
                 ],
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (spot) => Colors.grey[900]!,
+                    getTooltipColor: (spot) => const Color(0xFF1A1A1A),
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((spot) {
                         final index = spot.x.toInt();
                         final data = sortedHistory[index];
                         return LineTooltipItem(
-                          '${DateFormat('HH:mm:ss').format(data.timestamp)}\nRisk: ${data.riskScore}\nConf: ${(data.confidence * 100).toInt()}%\n${data.event ?? ""}',
-                          GoogleFonts.robotoMono(color: Colors.white),
+                          '${DateFormat('HH:mm:ss').format(data.timestamp)}\n'
+                          'Risk: ${data.riskScore}\n'
+                          'Conf: ${(data.confidence * 100).toInt()}%',
+                          GoogleFonts.robotoMono(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
                         );
                       }).toList();
                     },
@@ -471,25 +480,7 @@ class CommandCenterPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildLegendDot(Color color, String label) {
-    return Row(
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: GoogleFonts.robotoMono(color: Colors.grey[500], fontSize: 10),
-        ),
-      ],
-    );
-  }
-
-  // --- Zone C: Live Stress Snapshot ---
-  Widget _buildZoneC(
+  Widget _buildStressSnapshot(
     BuildContext context,
     Map<String, StressFactor> stressBreakdown,
   ) {
@@ -497,27 +488,24 @@ class CommandCenterPage extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'LIVE STRESS SNAPSHOT',
+          'STRESS FACTORS',
           style: GoogleFonts.robotoMono(
-            color: Colors.grey,
-            fontSize: 12,
+            color: Colors.grey[600],
+            fontSize: 10,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
+            letterSpacing: 1,
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 160,
-          child: Row(
-            children: stressBreakdown.entries.map((entry) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: _buildStressCard(context, entry.key, entry.value),
-                ),
-              );
-            }).toList(),
-          ),
+        Row(
+          children: stressBreakdown.entries.map((entry) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: _buildStressCard(context, entry.key, entry.value),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -528,64 +516,55 @@ class CommandCenterPage extends ConsumerWidget {
     String title,
     StressFactor factor,
   ) {
-    Color color = Colors.greenAccent;
-    if (factor.value > 50) color = Colors.orangeAccent;
-    if (factor.value > 80) color = Colors.redAccent;
+    Color color = const Color(0xFF00FF88);
+    if (factor.value > 50) color = const Color(0xFFFFCC00);
+    if (factor.value > 80) color = const Color(0xFFFF3333);
 
     return InkWell(
       onTap: () => context.go('/stress'),
-      borderRadius: BorderRadius.circular(8),
       child: Container(
+        height: 140,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[800]!),
+          color: const Color(0xFF0F0F0F),
+          border: Border.all(
+            color: const Color(0xFF1A1A1A),
+            width: 1,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title.toUpperCase(),
-                  style: GoogleFonts.robotoMono(
-                    color: Colors.grey[500],
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                _buildMiniSparkline(factor.history, color),
-              ],
+            Text(
+              title.toUpperCase(),
+              style: GoogleFonts.robotoMono(
+                color: Colors.grey[700],
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const Spacer(),
             Text(
               factor.value.toStringAsFixed(1),
               style: GoogleFonts.robotoMono(
                 color: color,
-                fontSize: 28,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
+                height: 1,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'High ${factor.value > factor.rollingMean ? '+' : ''}${(factor.value - factor.rollingMean).toStringAsFixed(1)}',
+                  '${(factor.contributionPercent * 100).toInt()}%',
                   style: GoogleFonts.robotoMono(
-                    color: Colors.grey[600],
+                    color: Colors.grey[700],
                     fontSize: 10,
                   ),
                 ),
-                Text(
-                  '${(factor.contributionPercent * 100).toInt()}% Contrib.',
-                  style: GoogleFonts.robotoMono(
-                    color: Colors.grey[600],
-                    fontSize: 10,
-                  ),
-                ),
+                _buildMiniSparkline(factor.history, color),
               ],
             ),
           ],
@@ -595,10 +574,10 @@ class CommandCenterPage extends ConsumerWidget {
   }
 
   Widget _buildMiniSparkline(List<double> history, Color color) {
-    if (history.isEmpty) return const SizedBox(width: 50, height: 20);
+    if (history.isEmpty) return const SizedBox(width: 40, height: 20);
     return SizedBox(
-      width: 50,
-      height: 30,
+      width: 40,
+      height: 20,
       child: LineChart(
         LineChartData(
           gridData: FlGridData(show: false),
@@ -613,7 +592,7 @@ class CommandCenterPage extends ConsumerWidget {
                   .toList(),
               isCurved: true,
               color: color,
-              barWidth: 2,
+              barWidth: 1,
               dotData: FlDotData(show: false),
               belowBarData: BarAreaData(show: false),
             ),
