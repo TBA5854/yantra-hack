@@ -29,6 +29,10 @@ _$RiskStateImpl _$$RiskStateImplFromJson(Map<String, dynamic> json) =>
       chainFinalityList: (json['chainFinalityList'] as List<dynamic>)
           .map((e) => ChainFinalityData.fromJson(e as Map<String, dynamic>))
           .toList(),
+      riskRating: json['riskRating'] as String,
+      mlEnabled: json['mlEnabled'] as bool? ?? false,
+      models: json['models'] as Map<String, dynamic>?,
+      explainability: json['explainability'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$RiskStateImplToJson(_$RiskStateImpl instance) =>
@@ -46,4 +50,8 @@ Map<String, dynamic> _$$RiskStateImplToJson(_$RiskStateImpl instance) =>
       'completeness': instance.completeness,
       'stalenessPenalty': instance.stalenessPenalty,
       'chainFinalityList': instance.chainFinalityList,
+      'riskRating': instance.riskRating,
+      'mlEnabled': instance.mlEnabled,
+      'models': instance.models,
+      'explainability': instance.explainability,
     };

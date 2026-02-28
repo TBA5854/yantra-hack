@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: atlas-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-atlas}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-atlas_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-atlas_logs}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlas"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - atlas-network
+
+  # Rust Logger API (Solana attestation)
+  logger-api:
+    build:
+      context: ./logger/api
+      dockerfile: Dockerfile
+    container_name: atlas-logger
+    environment:
+      DATABASE_URL: postgresql://atlas:atlas_dev_password@postgres:5432/atlas_logs
+      RUST_LOG: info
+      SOLANA_RPC_URL: ${SOLANA_RPC_URL:-https://api.devnet.solana.com}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlas-network
+
+  # FastAPI ML Backend
+  ml-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: atlas-ml-backend
+    environment:
+      LOGGER_API_URL: http://logger-api:8080
+      ML_MODEL_DIR: src/data/models
+      TCS_THRESHOLD: 0.7
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      CORS_ORIGINS: '["http://localhost:3000", "http://localhost:8080"]'
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount models directory (you need to copy .pkl files here)
+      - ./backend/src/data/models:/app/src/data/models:ro
+    depends_on:
+      logger-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlas-network
+
+  # Flutter Web (Nginx)
+  flutter-web:
+    image: nginx:alpine
+    container_name: atlas-flutter-web
+    ports:
+      - "3000:80"
+    volumes:
+      - ./flutter/build/web:/usr/share/nginx/html:ro
+      - ./flutter/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      ml-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlas-network
+
+networks:
+  atlas-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

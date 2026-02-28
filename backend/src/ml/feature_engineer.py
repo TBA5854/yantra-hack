@@ -52,7 +52,7 @@ class FeatureEngineer:
         
         logger.info(f"FeatureEngineer initialized with window_size={window_size}")
     
-    def transform(self, raw_data: Dict) -> Optional<Dict[str, float]]:
+    def transform(self, raw_data: Dict) -> Optional[Dict[str, float]]:
         """
         Transform raw data point to 58 engineered features.
         

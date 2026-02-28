@@ -16,9 +16,18 @@ from .models import (
     CoinConfig, ChainConfig, WSMessage,
     RiskLevel, WindowState, StressBreakdown, ChainFinality
 )
-from ..ml.feature_engineer import FeatureEngineer
-from ..ml.explainer import ExplainableRiskPredictor
-from ..ml.logger_client import LoggerClient
+
+try:
+    from ..ml.feature_engineer import FeatureEngineer
+    from ..ml.explainer import ExplainableRiskPredictor
+    from ..ml.logger_client import LoggerClient
+    _ML_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"ML modules unavailable: {e}")
+    FeatureEngineer = None
+    ExplainableRiskPredictor = None
+    LoggerClient = None
+    _ML_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -53,30 +62,39 @@ websocket_connections: List[WebSocket] = []
 async def startup():
     """Initialize ML models and connections on startup."""
     global feature_engineer, predictor, logger_client
-    
+
     logger.info("🚀 Starting ATLAS ML Risk API...")
-    
-    # Initialize feature engineer
-    feature_engineer = FeatureEngineer(window_size=96)
-    logger.info("✅ Feature Engineer initialized")
-    
-    # Initialize ML predictor
-    try:
-        predictor = ExplainableRiskPredictor(model_dir='src/data/models')
-        logger.info("✅ ML Predictor initialized")
-    except Exception as e:
-        logger.error(f"❌ Failed to load ML models: {e}")
-        logger.warning("⚠️  API will run without ML predictions")
-        predictor = None
-    
-    # Initialize logger client
-    logger_client = LoggerClient(logger_api_url='http://localhost:8080')
-    health =await logger_client.get_health()
-    if health:
-        logger.info("✅ Logger API connected")
+
+    if _ML_AVAILABLE:
+        # Initialize feature engineer
+        try:
+            feature_engineer = FeatureEngineer(window_size=96)
+            logger.info("✅ Feature Engineer initialized")
+        except Exception as e:
+            logger.warning(f"⚠️  Feature Engineer unavailable: {e}")
+
+        # Initialize ML predictor
+        try:
+            predictor = ExplainableRiskPredictor(model_dir='data/models')
+            logger.info("✅ ML Predictor initialized")
+        except Exception as e:
+            logger.error(f"❌ Failed to load ML models: {e}")
+            logger.warning("⚠️  API will run without ML predictions")
+            predictor = None
+
+        # Initialize logger client
+        try:
+            logger_client = LoggerClient(logger_api_url='http://localhost:8080')
+            health = await logger_client.get_health()
+            if health:
+                logger.info("✅ Logger API connected")
+            else:
+                logger.warning("⚠️  Logger API unavailable")
+        except Exception as e:
+            logger.warning(f"⚠️  Logger API unavailable: {e}")
     else:
-        logger.warning("⚠️  Logger API unavailable")
-    
+        logger.warning("⚠️  ML modules not installed, running API without ML")
+
     logger.info("✅ API ready!")
 
 
@@ -102,12 +120,9 @@ async def get_current_risk(
     
     Returns ML prediction with SHAP explanations if available.
     """
-    if predictor is None:
-        raise HTTPException(status_code=503, detail="ML models not available")
-    
     # TODO: Get latest data from data collection pipeline
     # For now, return mock response
-    
+
     return RiskState(
         coin=coin.upper(),
         chain=chain,
@@ -131,7 +146,7 @@ async def get_current_risk(
                 is_finalized=True
             )
         ],
-        ml_enabled=True
+        ml_enabled=predictor is not None
     )
 
 

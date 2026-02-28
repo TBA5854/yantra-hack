@@ -40,6 +40,8 @@ class CommandCenterPage extends ConsumerWidget {
                       child: _buildRiskScoreCard(
                         riskState.riskScore,
                         riskState.riskLevel,
+                        riskState.riskRating,
+                        riskState.mlEnabled,
                       ),
                     ),
                     const SizedBox(width: 24),
@@ -73,15 +75,10 @@ class CommandCenterPage extends ConsumerWidget {
         );
       },
       loading: () => const Center(
-        child: CircularProgressIndicator(
-          color: Color(0xFF00E5FF),
-        ),
+        child: CircularProgressIndicator(color: Color(0xFF00E5FF)),
       ),
       error: (err, stack) => Center(
-        child: Text(
-          'Error: $err',
-          style: const TextStyle(color: Colors.red),
-        ),
+        child: Text('Error: $err', style: const TextStyle(color: Colors.red)),
       ),
     );
   }
@@ -100,33 +97,66 @@ class CommandCenterPage extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Container(
-          width: 60,
-          height: 2,
-          color: const Color(0xFF00E5FF),
-        ),
+        Container(width: 60, height: 2, color: const Color(0xFF00E5FF)),
       ],
     );
   }
 
-  Widget _buildRiskScoreCard(int score, String level) {
+  Widget _buildRiskScoreCard(
+    int score,
+    String level,
+    String rating,
+    bool mlEnabled,
+  ) {
     Color scoreColor = const Color(0xFF00FF88); // Green
     if (score > 50) scoreColor = const Color(0xFFFFCC00); // Yellow
     if (score > 80) scoreColor = const Color(0xFFFF3333); // Red
 
     return Container(
-      height: 280,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: const Color(0xFF0F0F0F),
-        border: Border.all(
-          color: const Color(0xFF1A1A1A),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFF1A1A1A), width: 1),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          // ML Badge
+          if (mlEnabled)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00E5FF).withOpacity(0.1),
+                  border: Border.all(color: const Color(0xFF00E5FF), width: 1),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.psychology,
+                      size: 12,
+                      color: Color(0xFF00E5FF),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'ML PREDICTION',
+                      style: GoogleFonts.robotoMono(
+                        color: const Color(0xFF00E5FF),
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
           // Large score number
           Text(
             score.toString(),
@@ -139,12 +169,31 @@ class CommandCenterPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
+          // Risk rating (AAA, AA, A, B, C)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            decoration: BoxDecoration(
+              color: scoreColor.withOpacity(0.1),
+              border: Border.all(color: scoreColor, width: 1),
+            ),
+            child: Text(
+              rating,
+              style: GoogleFonts.robotoMono(
+                color: scoreColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 3,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+
           // Risk level
           Text(
             level.toUpperCase(),
             style: GoogleFonts.robotoMono(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               letterSpacing: 2,
             ),
@@ -202,15 +251,11 @@ class CommandCenterPage extends ConsumerWidget {
         const SizedBox(height: 8),
         Container(
           height: 4,
-          decoration: BoxDecoration(
-            color: const Color(0xFF1A1A1A),
-          ),
+          decoration: BoxDecoration(color: const Color(0xFF1A1A1A)),
           child: FractionallySizedBox(
             alignment: Alignment.centerLeft,
             widthFactor: value,
-            child: Container(
-              color: color,
-            ),
+            child: Container(color: color),
           ),
         ),
       ],
@@ -231,10 +276,7 @@ class CommandCenterPage extends ConsumerWidget {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: const Color(0xFF0F0F0F),
-          border: Border.all(
-            color: const Color(0xFF1A1A1A),
-            width: 1,
-          ),
+          border: Border.all(color: const Color(0xFF1A1A1A), width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,11 +301,7 @@ class CommandCenterPage extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // Window State
-            _buildMetric(
-              'WINDOW',
-              windowState,
-              Colors.white,
-            ),
+            _buildMetric('WINDOW', windowState, Colors.white),
             const SizedBox(height: 20),
 
             // Finality
@@ -286,11 +324,7 @@ class CommandCenterPage extends ConsumerWidget {
             // Tap hint
             Row(
               children: [
-                Icon(
-                  Icons.arrow_forward,
-                  color: Colors.grey[800],
-                  size: 12,
-                ),
+                Icon(Icons.arrow_forward, color: Colors.grey[800], size: 12),
                 const SizedBox(width: 8),
                 Text(
                   'View details',
@@ -313,10 +347,7 @@ class CommandCenterPage extends ConsumerWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.robotoMono(
-            color: Colors.grey[700],
-            fontSize: 11,
-          ),
+          style: GoogleFonts.robotoMono(color: Colors.grey[700], fontSize: 11),
         ),
         Text(
           value,
@@ -339,10 +370,7 @@ class CommandCenterPage extends ConsumerWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: const Color(0xFF0F0F0F),
-        border: Border.all(
-          color: const Color(0xFF1A1A1A),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFF1A1A1A), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,10 +392,8 @@ class CommandCenterPage extends ConsumerWidget {
                   show: true,
                   drawVerticalLine: false,
                   horizontalInterval: 25,
-                  getDrawingHorizontalLine: (value) => FlLine(
-                    color: const Color(0xFF1A1A1A),
-                    strokeWidth: 1,
-                  ),
+                  getDrawingHorizontalLine: (value) =>
+                      FlLine(color: const Color(0xFF1A1A1A), strokeWidth: 1),
                 ),
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
@@ -382,8 +408,9 @@ class CommandCenterPage extends ConsumerWidget {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              DateFormat('HH:mm')
-                                  .format(sortedHistory[index].timestamp),
+                              DateFormat(
+                                'HH:mm',
+                              ).format(sortedHistory[index].timestamp),
                               style: GoogleFonts.robotoMono(
                                 color: Colors.grey[700],
                                 fontSize: 9,
@@ -527,10 +554,7 @@ class CommandCenterPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: const Color(0xFF0F0F0F),
-          border: Border.all(
-            color: const Color(0xFF1A1A1A),
-            width: 1,
-          ),
+          border: Border.all(color: const Color(0xFF1A1A1A), width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

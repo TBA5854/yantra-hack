@@ -23,22 +23,29 @@ RiskState _$RiskStateFromJson(Map<String, dynamic> json) {
 mixin _$RiskState {
   int get riskScore => throw _privateConstructorUsedError;
   String get riskLevel =>
-      throw _privateConstructorUsedError; // 'Green', 'Yellow', 'Red'
+      throw _privateConstructorUsedError; // 'MINIMAL', 'LOW', 'ELEVATED', 'HIGH', 'CRITICAL'
   double get tcs =>
       throw _privateConstructorUsedError; // Total Confidence Score
   String get windowState =>
-      throw _privateConstructorUsedError; // 'OPEN', 'PROVISIONAL', 'FINAL'
+      throw _privateConstructorUsedError; // 'OPEN', 'CLOSED', 'FINAL'
   List<String> get explanations => throw _privateConstructorUsedError;
   Map<String, StressFactor> get stressBreakdown =>
       throw _privateConstructorUsedError;
   List<RiskSnapshot> get history => throw _privateConstructorUsedError;
   Map<String, dynamic> get chainData =>
-      throw _privateConstructorUsedError; // New fields
+      throw _privateConstructorUsedError; // TCS breakdown fields
   double get finalityWeight => throw _privateConstructorUsedError;
   double get crossChainConfidence => throw _privateConstructorUsedError;
   double get completeness => throw _privateConstructorUsedError;
   double get stalenessPenalty => throw _privateConstructorUsedError;
   List<ChainFinalityData> get chainFinalityList =>
+      throw _privateConstructorUsedError; // ML-specific fields
+  String get riskRating =>
+      throw _privateConstructorUsedError; // 'AAA', 'AA', 'A', 'B', 'C'
+  bool get mlEnabled => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get models =>
+      throw _privateConstructorUsedError; // ISO + XGB outputs
+  Map<String, dynamic>? get explainability =>
       throw _privateConstructorUsedError;
 
   /// Serializes this RiskState to a JSON map.
@@ -70,6 +77,10 @@ abstract class $RiskStateCopyWith<$Res> {
     double completeness,
     double stalenessPenalty,
     List<ChainFinalityData> chainFinalityList,
+    String riskRating,
+    bool mlEnabled,
+    Map<String, dynamic>? models,
+    Map<String, dynamic>? explainability,
   });
 }
 
@@ -101,6 +112,10 @@ class _$RiskStateCopyWithImpl<$Res, $Val extends RiskState>
     Object? completeness = null,
     Object? stalenessPenalty = null,
     Object? chainFinalityList = null,
+    Object? riskRating = null,
+    Object? mlEnabled = null,
+    Object? models = freezed,
+    Object? explainability = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -156,6 +171,22 @@ class _$RiskStateCopyWithImpl<$Res, $Val extends RiskState>
                 ? _value.chainFinalityList
                 : chainFinalityList // ignore: cast_nullable_to_non_nullable
                       as List<ChainFinalityData>,
+            riskRating: null == riskRating
+                ? _value.riskRating
+                : riskRating // ignore: cast_nullable_to_non_nullable
+                      as String,
+            mlEnabled: null == mlEnabled
+                ? _value.mlEnabled
+                : mlEnabled // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            models: freezed == models
+                ? _value.models
+                : models // ignore: cast_nullable_to_non_nullable
+                      as Map<String, dynamic>?,
+            explainability: freezed == explainability
+                ? _value.explainability
+                : explainability // ignore: cast_nullable_to_non_nullable
+                      as Map<String, dynamic>?,
           )
           as $Val,
     );
@@ -185,6 +216,10 @@ abstract class _$$RiskStateImplCopyWith<$Res>
     double completeness,
     double stalenessPenalty,
     List<ChainFinalityData> chainFinalityList,
+    String riskRating,
+    bool mlEnabled,
+    Map<String, dynamic>? models,
+    Map<String, dynamic>? explainability,
   });
 }
 
@@ -215,6 +250,10 @@ class __$$RiskStateImplCopyWithImpl<$Res>
     Object? completeness = null,
     Object? stalenessPenalty = null,
     Object? chainFinalityList = null,
+    Object? riskRating = null,
+    Object? mlEnabled = null,
+    Object? models = freezed,
+    Object? explainability = freezed,
   }) {
     return _then(
       _$RiskStateImpl(
@@ -270,6 +309,22 @@ class __$$RiskStateImplCopyWithImpl<$Res>
             ? _value._chainFinalityList
             : chainFinalityList // ignore: cast_nullable_to_non_nullable
                   as List<ChainFinalityData>,
+        riskRating: null == riskRating
+            ? _value.riskRating
+            : riskRating // ignore: cast_nullable_to_non_nullable
+                  as String,
+        mlEnabled: null == mlEnabled
+            ? _value.mlEnabled
+            : mlEnabled // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        models: freezed == models
+            ? _value._models
+            : models // ignore: cast_nullable_to_non_nullable
+                  as Map<String, dynamic>?,
+        explainability: freezed == explainability
+            ? _value._explainability
+            : explainability // ignore: cast_nullable_to_non_nullable
+                  as Map<String, dynamic>?,
       ),
     );
   }
@@ -292,11 +347,17 @@ class _$RiskStateImpl implements _RiskState {
     required this.completeness,
     required this.stalenessPenalty,
     required final List<ChainFinalityData> chainFinalityList,
+    required this.riskRating,
+    this.mlEnabled = false,
+    final Map<String, dynamic>? models,
+    final Map<String, dynamic>? explainability,
   }) : _explanations = explanations,
        _stressBreakdown = stressBreakdown,
        _history = history,
        _chainData = chainData,
-       _chainFinalityList = chainFinalityList;
+       _chainFinalityList = chainFinalityList,
+       _models = models,
+       _explainability = explainability;
 
   factory _$RiskStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$RiskStateImplFromJson(json);
@@ -305,15 +366,15 @@ class _$RiskStateImpl implements _RiskState {
   final int riskScore;
   @override
   final String riskLevel;
-  // 'Green', 'Yellow', 'Red'
+  // 'MINIMAL', 'LOW', 'ELEVATED', 'HIGH', 'CRITICAL'
   @override
   final double tcs;
   // Total Confidence Score
   @override
   final String windowState;
-  // 'OPEN', 'PROVISIONAL', 'FINAL'
+  // 'OPEN', 'CLOSED', 'FINAL'
   final List<String> _explanations;
-  // 'OPEN', 'PROVISIONAL', 'FINAL'
+  // 'OPEN', 'CLOSED', 'FINAL'
   @override
   List<String> get explanations {
     if (_explanations is EqualUnmodifiableListView) return _explanations;
@@ -345,7 +406,7 @@ class _$RiskStateImpl implements _RiskState {
     return EqualUnmodifiableMapView(_chainData);
   }
 
-  // New fields
+  // TCS breakdown fields
   @override
   final double finalityWeight;
   @override
@@ -363,9 +424,38 @@ class _$RiskStateImpl implements _RiskState {
     return EqualUnmodifiableListView(_chainFinalityList);
   }
 
+  // ML-specific fields
+  @override
+  final String riskRating;
+  // 'AAA', 'AA', 'A', 'B', 'C'
+  @override
+  @JsonKey()
+  final bool mlEnabled;
+  final Map<String, dynamic>? _models;
+  @override
+  Map<String, dynamic>? get models {
+    final value = _models;
+    if (value == null) return null;
+    if (_models is EqualUnmodifiableMapView) return _models;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  // ISO + XGB outputs
+  final Map<String, dynamic>? _explainability;
+  // ISO + XGB outputs
+  @override
+  Map<String, dynamic>? get explainability {
+    final value = _explainability;
+    if (value == null) return null;
+    if (_explainability is EqualUnmodifiableMapView) return _explainability;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
   String toString() {
-    return 'RiskState(riskScore: $riskScore, riskLevel: $riskLevel, tcs: $tcs, windowState: $windowState, explanations: $explanations, stressBreakdown: $stressBreakdown, history: $history, chainData: $chainData, finalityWeight: $finalityWeight, crossChainConfidence: $crossChainConfidence, completeness: $completeness, stalenessPenalty: $stalenessPenalty, chainFinalityList: $chainFinalityList)';
+    return 'RiskState(riskScore: $riskScore, riskLevel: $riskLevel, tcs: $tcs, windowState: $windowState, explanations: $explanations, stressBreakdown: $stressBreakdown, history: $history, chainData: $chainData, finalityWeight: $finalityWeight, crossChainConfidence: $crossChainConfidence, completeness: $completeness, stalenessPenalty: $stalenessPenalty, chainFinalityList: $chainFinalityList, riskRating: $riskRating, mlEnabled: $mlEnabled, models: $models, explainability: $explainability)';
   }
 
   @override
@@ -404,6 +494,15 @@ class _$RiskStateImpl implements _RiskState {
             const DeepCollectionEquality().equals(
               other._chainFinalityList,
               _chainFinalityList,
+            ) &&
+            (identical(other.riskRating, riskRating) ||
+                other.riskRating == riskRating) &&
+            (identical(other.mlEnabled, mlEnabled) ||
+                other.mlEnabled == mlEnabled) &&
+            const DeepCollectionEquality().equals(other._models, _models) &&
+            const DeepCollectionEquality().equals(
+              other._explainability,
+              _explainability,
             ));
   }
 
@@ -424,6 +523,10 @@ class _$RiskStateImpl implements _RiskState {
     completeness,
     stalenessPenalty,
     const DeepCollectionEquality().hash(_chainFinalityList),
+    riskRating,
+    mlEnabled,
+    const DeepCollectionEquality().hash(_models),
+    const DeepCollectionEquality().hash(_explainability),
   );
 
   /// Create a copy of RiskState
@@ -455,6 +558,10 @@ abstract class _RiskState implements RiskState {
     required final double completeness,
     required final double stalenessPenalty,
     required final List<ChainFinalityData> chainFinalityList,
+    required final String riskRating,
+    final bool mlEnabled,
+    final Map<String, dynamic>? models,
+    final Map<String, dynamic>? explainability,
   }) = _$RiskStateImpl;
 
   factory _RiskState.fromJson(Map<String, dynamic> json) =
@@ -463,11 +570,11 @@ abstract class _RiskState implements RiskState {
   @override
   int get riskScore;
   @override
-  String get riskLevel; // 'Green', 'Yellow', 'Red'
+  String get riskLevel; // 'MINIMAL', 'LOW', 'ELEVATED', 'HIGH', 'CRITICAL'
   @override
   double get tcs; // Total Confidence Score
   @override
-  String get windowState; // 'OPEN', 'PROVISIONAL', 'FINAL'
+  String get windowState; // 'OPEN', 'CLOSED', 'FINAL'
   @override
   List<String> get explanations;
   @override
@@ -475,7 +582,7 @@ abstract class _RiskState implements RiskState {
   @override
   List<RiskSnapshot> get history;
   @override
-  Map<String, dynamic> get chainData; // New fields
+  Map<String, dynamic> get chainData; // TCS breakdown fields
   @override
   double get finalityWeight;
   @override
@@ -485,7 +592,15 @@ abstract class _RiskState implements RiskState {
   @override
   double get stalenessPenalty;
   @override
-  List<ChainFinalityData> get chainFinalityList;
+  List<ChainFinalityData> get chainFinalityList; // ML-specific fields
+  @override
+  String get riskRating; // 'AAA', 'AA', 'A', 'B', 'C'
+  @override
+  bool get mlEnabled;
+  @override
+  Map<String, dynamic>? get models; // ISO + XGB outputs
+  @override
+  Map<String, dynamic>? get explainability;
 
   /// Create a copy of RiskState
   /// with the given fields replaced by the non-null parameter values.

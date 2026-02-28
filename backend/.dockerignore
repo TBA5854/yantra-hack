@@ -1,0 +1,29 @@
+# Docker Ignore - Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pytest_cache
+.coverage
+htmlcov/
+.venv/
+venv/
+ENV/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Model files (will be mounted as volume)
+src/data/models/*.pkl
+
+# Tests
+.tox/
+.pytest_cache/
